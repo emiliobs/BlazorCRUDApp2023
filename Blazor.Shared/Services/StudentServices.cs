@@ -5,9 +5,9 @@ using System.Data.SqlClient;
 
 namespace Blazor.Shared.Services
 {
-    public class StudentServices
+    public class StudentServices : IStudentServices
     {
-        private readonly string _connectionString = string.Empty;
+         string _connectionString = string.Empty;
         private readonly IConfiguration _configuration;
 
         public StudentServices(IConfiguration configuration)
@@ -19,12 +19,10 @@ namespace Blazor.Shared.Services
         {
             List<StudentEntity> lstStudent = new();
 
-            using (SqlConnection con = new(_connectionString))
+            using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                SqlCommand cmd = new("GetStudentsRecord", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
+                SqlCommand cmd = new SqlCommand("GetStudentsRecord", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
                 con.Open();
 

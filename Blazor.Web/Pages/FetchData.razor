@@ -1,35 +1,40 @@
-﻿@page "/fetchdata"
+﻿@page "/student-list"
+@using Blazor.Shared.Models;
+@using Newtonsoft.Json;
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Students List</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Students List</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+
+@if (studentsLists == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading.....</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Student Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email Address</th>
+                <th>Gender</th>
+                <th>Created On</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var students in studentsLists)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@students.StudentId</td>
+                    <td>@students.FirstName</td>
+                    <td>@students.EmailAddress</td>
+                    <td>@students.Gender</td>
+                    <td>@students.CreateOn</td>
                 </tr>
             }
         </tbody>
@@ -37,21 +42,22 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
 
-    protected override async Task OnInitializedAsync()
+    protected List<StudentEntity> studentsLists = new List<StudentEntity>();
+
+    protected override async Task OnInitializedAsync() => await GetStudentLis();
+
+    protected async Task GetStudentLis()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
+        var apiUrl = "https://localhost:7047/api/students/GetStudentsList";
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
 
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
+        var resppnseBodyJson = await response.Content.ReadAsStringAsync();
 
-        public int TemperatureC { get; set; }
+        studentsLists = JsonConvert.DeserializeObject<List<StudentEntity>>(resppnseBodyJson);
 
-        public string? Summary { get; set; }
+        //response
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 }
