@@ -1,5 +1,6 @@
 ﻿@page "/addstudent"
 @inject HttpClient Http
+@inject NavigationManager navigationManager
 
 
 <PageTitle>Add New Student</PageTitle>
@@ -67,18 +68,19 @@
 
     protected async Task SaveStudent()
     {
+        string apiURL = "https://localhost:7047/api/students/AddNewStudent";
 
         if (string.IsNullOrEmpty(studentEntity.FirstName))
         {
             return;
         }
 
-         if (string.IsNullOrEmpty(studentEntity.LastName))
+        if (string.IsNullOrEmpty(studentEntity.LastName))
         {
             return;
         }
 
-         if (string.IsNullOrEmpty(studentEntity.EmailAddress))
+        if (string.IsNullOrEmpty(studentEntity.EmailAddress))
         {
             return;
         }
@@ -88,7 +90,9 @@
             return;
         }
 
-        await Http.PutAsJsonAsync("", studentEntity);
+        await Http.PostAsJsonAsync(apiURL, studentEntity);
+
+        navigationManager.NavigateTo("/student-list");
 
         //if (studentEntity.StudentId != 0)
         //{
@@ -99,11 +103,11 @@
         //    await Http.PutAsJsonAsync("", studentEntity);
         //}
 
-        Cancel();
+      
     }
 
     protected async Task Cancel()
     {
-        
+        navigationManager.NavigateTo("/student-list");
     }
 }

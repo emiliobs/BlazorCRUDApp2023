@@ -26,5 +26,21 @@ namespace Blazor.Server.Controllers
 
             return Ok(students);
         }
+
+        [HttpPost("AddNewStudent")]
+        public async Task<IActionResult> AddNewStudent(StudentEntity studentEntity)
+        {
+            try
+            {
+                _studentServices.AddStudent(studentEntity);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
