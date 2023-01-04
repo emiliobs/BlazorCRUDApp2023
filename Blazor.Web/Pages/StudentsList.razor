@@ -1,6 +1,6 @@
 ﻿@page "/student-list"
-@using Blazor.Shared.Models;
-@using Newtonsoft.Json;
+@using Newtonsoft.Json
+@inject NavigationManager navigationManager
 @inject HttpClient Http
 
 <PageTitle>Students List</PageTitle>
@@ -24,6 +24,8 @@ else
                 <th>Email Address</th>
                 <th>Gender</th>
                 <th>Created On</th>
+                <th></th>
+                
             </tr>
         </thead>
         <tbody>
@@ -36,6 +38,10 @@ else
                     <td>@students.EmailAddress</td>
                     <td>@students.Gender</td>
                     <td>@students.CreateOn</td>
+                    <td>
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        <button type="button" class="btn btn-danger" @onclick="(async () => DeleteStudent(students.StudentId))">Delete</button>
+                     </td>
                 </tr>
             }
         </tbody>
@@ -46,7 +52,11 @@ else
 
     protected List<StudentEntity> studentsLists = new List<StudentEntity>();
 
-    protected override async Task OnInitializedAsync() => await GetStudentLis();
+    protected override async Task OnInitializedAsync()
+    {
+        await GetStudentLis();
+        //StateHasChanged();
+    }
 
     protected async Task GetStudentLis()
     {
@@ -57,8 +67,20 @@ else
         var resppnseBodyJson = await response.Content.ReadAsStringAsync();
 
         studentsLists = JsonConvert.DeserializeObject<List<StudentEntity>>(resppnseBodyJson);
-
+        StateHasChanged();
         //response
 
     }
+
+    protected async Task DeleteStudent(int studentId)
+    {
+        var apiUrl = $"https://localhost:7047/api/students/DeleteStudent/{studentId}";
+
+        await Http.DeleteAsync(apiUrl);
+
+        
+        await GetStudentLis();
+       navigationManager.NavigateTo("/student-list");
+    }
+
 }

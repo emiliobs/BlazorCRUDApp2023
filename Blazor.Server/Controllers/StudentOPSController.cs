@@ -42,5 +42,21 @@ namespace Blazor.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("DeleteStudent/{studentId}")]
+        public async Task<IActionResult> DeleteStudent(int studentId)
+        {
+            try
+            {
+                _studentServices.DeleteStudent(studentId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

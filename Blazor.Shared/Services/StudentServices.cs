@@ -97,7 +97,7 @@ namespace Blazor.Shared.Services
 
         }
 
-        public void DeleteStudent(StudentEntity student)
+        public void DeleteStudent(int studentId)
         {
             using SqlConnection con = new(_connectionString);
 
@@ -106,7 +106,7 @@ namespace Blazor.Shared.Services
                 CommandType = CommandType.StoredProcedure
             };
 
-            _ = cmd.Parameters.AddWithValue("@StudentId", student.StudentId);
+            _ = cmd.Parameters.AddWithValue("@StudentId", studentId);
 
             con.Open();
             _ = cmd.ExecuteNonQuery();

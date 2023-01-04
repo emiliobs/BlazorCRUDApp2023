@@ -7,6 +7,6 @@ namespace Blazor.Shared.Services
         IEnumerable<StudentEntity> GetAllStudent();
         void AddStudent(StudentEntity student);
         void UpdateStudent(StudentEntity student);
-        void DeleteStudent(StudentEntity student);
+        void DeleteStudent(int studentId);
     }
 }
