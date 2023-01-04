@@ -1,6 +1,5 @@
 ﻿using Blazor.Shared.Models;
 using Blazor.Shared.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blazor.Server.Controllers
@@ -23,7 +22,7 @@ namespace Blazor.Server.Controllers
         {
             List<StudentEntity> students = new List<StudentEntity>();
 
-            students = await _studentServices.GetAllStudent().ToList();
+            students = _studentServices.GetAllStudent().ToList();
 
             return Ok(students);
         }

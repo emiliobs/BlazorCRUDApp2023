@@ -7,17 +7,18 @@ namespace Blazor.Shared.Services
 {
     public class StudentServices : IStudentServices
     {
-         string _connectionString = string.Empty;
+        string _connectionString = "Data Source=EMILIO\\EMILIO;Initial Catalog=BLazorCRUD;Integrated Security=True;TrustServerCertificate=True";
+        //string _connectionString = string.Empty;
         private readonly IConfiguration _configuration;
 
-        public StudentServices(IConfiguration configuration)
-        {
-            _connectionString = _configuration.GetConnectionString("DBConnection");
-        }
+        //public StudentServices(IConfiguration configuration)
+        //{
+        //    _connectionString = _configuration.GetConnectionString("DBConnection");
+        //}
 
         public IEnumerable<StudentEntity> GetAllStudent()
         {
-            List<StudentEntity> lstStudent = new();
+            List<StudentEntity> lstStudent = new List<StudentEntity>();
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
