@@ -43,6 +43,24 @@ namespace Blazor.Server.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("UpdateStudent")]
+        public async Task<IActionResult> UpdateStudent(StudentEntity studentEntity)
+        {
+
+            try
+            {
+                _studentServices.UpdateStudent(studentEntity);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+               return  BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("DeleteStudent/{studentId}")]
         public async Task<IActionResult> DeleteStudent(int studentId)
         {

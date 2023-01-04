@@ -1,0 +1,126 @@
+﻿@page "/updatestudent/{StudentId:int}"
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+
+
+<PageTitle>Edit Student</PageTitle>
+<h1>Edit Student</h1>
+
+<EditForm Model="@studentEntity" OnValidSubmit="UpdateStudents"> 
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="mb-3" hidden="hidden">
+        <label for="StudentId" class="form-label">Student Id</label>
+        <div class="col-md-4">
+        <InputNumber class="form-control" @bind-Value="studentEntity.StudentId" />
+        <ValidationMessage For="@(() => studentEntity.StudentId)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="FirstName" class="form-label">First Name</label>
+        <div class="col-md-4">
+        <InputText class="form-control" @bind-Value="studentEntity.FirstName" />
+        <ValidationMessage For="@(() => studentEntity.FirstName)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="LastName" class="form-label">Last Name</label>
+        <div class="col-md-4">
+        <InputText class="form-control" @bind-Value="studentEntity.LastName" />
+        <ValidationMessage For="@(() => studentEntity.LastName)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="EmailAddress" class="form-label">Email Address</label>
+        <div class="col-md-4">
+        <InputText class="form-control" @bind-Value="studentEntity.EmailAddress" />
+        <ValidationMessage For="@(() => studentEntity.EmailAddress)"></ValidationMessage>
+        </div>
+    </div
+
+    <div class="mb-3">
+        <label for="Gender" class="form-label">Gender</label>
+        <div class="col-md-4">
+        <InputText class="form-control" @bind-Value="studentEntity.Gender" />
+        <ValidationMessage For="@(() => studentEntity.Gender)"></ValidationMessage>
+        </div>
+    </div>
+
+     @*<div class="mb-3">
+        <label for="CreateOn" class="form-label">Crerate On</label>
+        <div class="col-md-4">
+        <InputDate class="form-control" @bind-Value="studentEntity.CreateOn" />
+        <ValidationSummary For="@(() => studentEntity.CreateOn)"></ValidationSummary>
+        </div>
+    </div>
+*@
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+
+
+</EditForm>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int StudentId { get; set; }
+
+    protected StudentEntity studentEntity = new();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        string apiUrl = "https://localhost:7047/api/students/GetStudentsList";
+
+        var response = await Http.GetAsync(apiUrl);
+        response.EnsureSuccessStatusCode();
+
+        var resppnseBodyJson = await response.Content.ReadAsStringAsync();
+
+        var  studentsLists = JsonConvert.DeserializeObject<List<StudentEntity>>(resppnseBodyJson);
+
+        studentEntity = studentsLists.Where(e => e.StudentId == StudentId).FirstOrDefault();
+        StateHasChanged();
+    }
+
+    protected async Task UpdateStudents()
+    {
+        string apiURL = "https://localhost:7047/api/students/UpdateStudent";
+
+        if (studentEntity.StudentId < 1)
+        {
+            return;
+        }
+
+        await Http.PostAsJsonAsync(apiURL, studentEntity);
+
+        navigationManager.NavigateTo("/student-list");
+
+        //if (studentEntity.StudentId != 0)
+        //{
+        //    await Http.PutAsJsonAsync("", studentEntity);
+        //}
+        //else
+        //{
+        //    await Http.PutAsJsonAsync("", studentEntity);
+        //}
+
+      
+    }
+
+    protected async Task Cancel()
+    {
+        navigationManager.NavigateTo("/student-list");
+    }
+}
